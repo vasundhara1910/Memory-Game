@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="memorygame.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+
+    <title>Memory Game</title>
+
+
+    <script>
+      $(document).ready(function() {
+		var app = {
+			cards: [1,1,2,2,3,3,4,4,5,5,6,6],
+			init: function() {
+				app.suffle();
+
+			},
+			suffle: function() {
+				var random=0;
+				var temp=0;
+				for (var i = 0; i < app.cards.length; i++) {
+					random=Math.round(Math.random() * i);
+				
+					temp = app.cards[i];
+					app.cards[i]=app.cards[random];
+					app.cards[random]=temp;
+
+				}
+				console.log('shuffled card array '+app.cards);
+				app.assignCards();
+			},
+			assignCards: function() {
+				$('.card').each(function(index){
+					$(this).attr('data-card-value',app.cards[index]);
+				});
+				app.clickHandler();
+			},
+			clickHandler: function() {
+				$('.card').on('click',function() {
+					$(this).html('<p>' + $(this).data('cardValue') + '</p>').addClass('selected');
+					app.checkMatch();
+
+				});
+
+			},
+			checkMatch: function() {
+				if($('.selected').length === 2) {
+					if($('.selected').first().data('cardValue') == $('.selected').last().data('cardValue')) {
+						//remove card
+						$('.selected').each(function() {
+							$(this).animate({opacity:0}).removeClass('unmatched').removeClass('selected');
+						});
+						app.checkWin();  
+					} else {
+						//flip card back over
+						setTimeout(function() {
+							$('.selected').each(function(){
+								$(this).html('').removeClass('selected');
+							});
+							
+
+
+						},1000);
+
+					}
+					
+				}
+			},
+			checkWin: function() {
+					if( $('.unmatched').length === 0) {
+						$('.container').html('<div class="result"> <h1>GAME OVER </h1>' + 
+											'<h1>YOU WON </h1>' +
+											' <button class="playAgain">Play Again</button> </div>');
+					}
+					$('.playAgain').click(function() {
+				 location.reload();
+				});
+				}
+
+		}
+
+		app.init();
+	});
+
+ 
+    </script>
+</head>
+<body>
+
+    <body>
+        <div class="container">
+            <h2>MEMORY GAME</h2>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+          <div class="card unmatched"></div>
+        </div>
+      </body>
+    
+</body>
+</html>
